@@ -10,6 +10,7 @@ import pytest
 from src.config import FORBIDDEN, TARGET
 from src.features import build_features, feature_columns
 from src.ingest import load_raw
+from src.config import RAW
 
 
 @pytest.fixture(scope="module")
@@ -55,6 +56,12 @@ def test_rolling_mean_excludes_today(feats):
     if all(d in by_date.index for d in window):
         expected = sum(by_date[d] for d in window) / 7
         assert feats.set_index("dteday").cnt_roll_7[date] == pytest.approx(expected)
+
+
+def test_temp_lag_1_is_yesterdays_temp(feats):
+    f = feats.set_index("dteday")
+    r = pd.read_csv(RAW, parse_dates=["dteday"]).set_index("dteday")
+    assert f.loc[pd.Timestamp("2012-06-15"), "temp_lag_1"] == pytest.approx(r.loc[pd.Timestamp("2012-06-14"), "temp"])
 
 
 def test_no_missing_values(feats):
