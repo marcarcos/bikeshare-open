@@ -1,5 +1,5 @@
 {
-  "n_features": 14,
+  "n_features": 15,
   "features": [
     "temp",
     "atemp",
@@ -13,6 +13,7 @@
     "month_cos",
     "weather_severity",
     "cnt_lag_1",
+    "temp_lag_1",
     "cnt_lag_7",
     "cnt_roll_7"
   ],
@@ -41,22 +42,22 @@
   },
   "ridge": {
     "valid": {
-      "r2": 0.6475,
-      "mae": 832.9
+      "r2": 0.6951,
+      "mae": 746.1
     },
     "test": {
-      "r2": 0.5833,
-      "mae": 947.1
+      "r2": 0.6238,
+      "mae": 876.6
     }
   },
   "hgb": {
     "valid": {
-      "r2": 0.2185,
-      "mae": 1296.6
+      "r2": 0.1936,
+      "mae": 1321.1
     },
     "test": {
-      "r2": -0.4975,
-      "mae": 1972.6
+      "r2": -0.5785,
+      "mae": 2036.7
     }
   }
 }
