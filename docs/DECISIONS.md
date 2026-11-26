@@ -18,3 +18,4 @@ Agents append here via the `/new-feature` skill; you append here by hand.
 - 2026-11-25 · CLAUDE.md: added a 9-line "Skills and guardrails" section (seed-fault skill, hook rule "fix the code, never the test", raw-data hash, column classification). 51 lines total.
 - 2026-11-25 · Exercise 3: no teammate, so audited my own leaky commit 6d19ad1 in a git worktree; disclosed in docs/AUDIT.md. The leak raised ridge valid R² 0.6951 -> 0.8025.
 - 2026-11-25 · Wrote the seed-fault skill because break/record/restore was repeated for four faults. Added Grep to its allowed-tools after the first run fell back to bash grep.
+- 2026-11-25 · Exercise 3 agent runs: stopped agent/audit.py after 53 min (no output) and the leakage-auditor subagent after ~4 min to travel. Documented as incomplete in docs/AUDIT.md rather than committing a partial or hand-written audit.jsonl.

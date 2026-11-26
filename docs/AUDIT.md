@@ -26,6 +26,7 @@ I worked solo with no teammate, and no swap partner was available, so I audited 
 
 A leakage bug presents as an improvement. Ridge gained 0.11 R² on validation and 0.10 on test, which a reviewer looking only at `metrics.json` would likely accept. The one signal was a test that encodes the rule ("a rolling feature must exclude today"), and in this repo the PostToolUse hook runs it on every agent edit. Fix: restore `.shift(1)` (done in `27c4972`).
 
-## Agent audit of main
+## Agent runs (not completed)
 
-`agent/audit.py` was run on the main repo; output in `reports/audit.jsonl`. (Summary added below once the run finished.)
+- `/leakage-auditor` subagent, started in Claude Code inside `/tmp/audit-target` (checkout of `6d19ad1`) at 19:48. Still running after ~4 minutes (5.3k tokens) when I had to stop for travel, so its output was not captured. **The findings table above is my own audit, not the subagent's.**
+- `python agent/audit.py . --out reports/audit.jsonl` on main: started 18:52, stopped manually at 19:45 after ~53 minutes with no output. Each turn re-read a context that grew to ~27k tokens, at 2-3 minutes per turn on qwen3.5:9b (it compacted once at 19:29). `reports/audit.jsonl` is therefore not committed. If time allows before the deadline, I will rerun both and push the real outputs.
