@@ -1,7 +1,7 @@
 {
   "model": "hgb",
-  "split": "valid",
   "anchor": "cnt_roll_7",
+  "final": false,
   "results": {
     "raw": {
       "valid": {
