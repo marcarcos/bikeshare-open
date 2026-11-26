@@ -39,3 +39,13 @@ rides) from calendar, weather, and lagged-demand features.
   cannot extrapolate to 2012. That is the headline result, not an error.
 - 2012-10-29 (Hurricane Sandy, 22 rides) is in the test set. Expect it in
   any residual plot.
+
+## Skills and guardrails
+- `/new-feature <name>`: add one feature, failing test first.
+- `/seed-fault <description>`: plant one fault in `src/` to check the
+  hook catches it. Never edits `tests/`, `data/`, or `.claude/`.
+- The PostToolUse hook re-runs `tests/test_leakage.py` after every `src/`
+  edit. If it goes red, fix the code. Never weaken or delete the test.
+- `data/raw/` is immutable; `test_raw_data_unchanged` pins its sha256.
+- Every raw column is a feature or listed in `FORBIDDEN`, `SOURCE_COLS`,
+  or `UNUSED_COLS` (`src/config.py`); `test_contract.py` enforces it.
