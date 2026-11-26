@@ -65,3 +65,14 @@ def test_every_raw_column_is_classified(raw, feats):
     known = FORBIDDEN | SOURCE_COLS | UNUSED_COLS | set(feature_columns(feats)) | {"dteday"}
     unclassified = set(raw.columns) - known
     assert not unclassified, f"unclassified raw columns: {sorted(unclassified)}"
+
+
+def test_raw_data_unchanged():
+    """data/raw/ is immutable. A Bash cp, a script, or a person can change it
+    outside the agent's tool calls, where no deny rule or hook applies.
+    Pin the file's sha256 so any change fails make test."""
+    import hashlib
+    from src.config import RAW
+    expected = "a6bed1577f6e4de56dcfae6d8315985073cc0ad3446c8c99ed60c86a0b5ad9dc"
+    actual = hashlib.sha256(RAW.read_bytes()).hexdigest()
+    assert actual == expected, f"raw data modified: sha256 {actual[:16]}... != {expected[:16]}..."
