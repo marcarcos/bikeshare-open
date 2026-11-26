@@ -235,3 +235,163 @@ Removed the `raise ValueError` for unmapped weather labels. **No existing test c
     =========================== short test summary info ============================
     FAILED tests/test_contract.py::test_raw_data_unchanged - AssertionError: raw ...
     1 failed, 5 passed in 1.09s
+
+## Exercise 1: feature test written first (failing run)
+
+`test_temp_lag_1_is_yesterdays_temp` was committed failing (`707a2c9`) before the feature (`54e113a`) made it pass:
+
+    .....F..                                                                 [100%]
+    =================================== FAILURES ===================================
+    ______________________ test_temp_lag_1_is_yesterdays_temp ______________________
+    
+    self = Index(['instant', 'season', 'yr', 'mnth', 'holiday', 'weekday', 'temp',
+           'atemp', 'hum', 'windspeed', 'casual', ...kday', 'month_sin', 'month_cos',
+           'weather_severity', 'cnt_lag_1', 'cnt_lag_7', 'cnt_roll_7'],
+          dtype='str')
+    key = 'temp_lag_1'
+    
+        def get_loc(self, key):
+            """
+            Get integer location, slice or boolean mask for requested label.
+        
+            Parameters
+            ----------
+            key : label
+                The key to check its location if it is present in the index.
+        
+            Returns
+            -------
+            int if unique index, slice if monotonic index, else mask
+                Integer location, slice or boolean mask.
+        
+            See Also
+            --------
+            Index.get_slice_bound : Calculate slice bound that corresponds to
+                given label.
+            Index.get_indexer : Computes indexer and mask for new index given
+                the current index.
+            Index.get_non_unique : Returns indexer and masks for new index given
+                the current index.
+            Index.get_indexer_for : Returns an indexer even when non-unique.
+        
+            Examples
+            --------
+            >>> unique_index = pd.Index(list("abc"))
+            >>> unique_index.get_loc("b")
+            1
+        
+            >>> monotonic_index = pd.Index(list("abbc"))
+            >>> monotonic_index.get_loc("b")
+            slice(1, 3, None)
+        
+            >>> non_monotonic_index = pd.Index(list("abcb"))
+            >>> non_monotonic_index.get_loc("b")
+            array([False,  True, False,  True])
+            """
+            casted_key = self._maybe_cast_indexer(key)
+            try:
+    >           return self._engine.get_loc(casted_key)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    
+    .venv/lib/python3.14/site-packages/pandas/core/indexes/base.py:3641: 
+    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+    pandas/_libs/index.pyx:168: in pandas._libs.index.IndexEngine.get_loc
+        ???
+    pandas/_libs/index.pyx:197: in pandas._libs.index.IndexEngine.get_loc
+        ???
+    pandas/_libs/hashtable_class_helper.pxi:7668: in pandas._libs.hashtable.PyObjectHashTable.get_item
+        ???
+    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+    
+    >   ???
+    E   KeyError: 'temp_lag_1'
+    
+    pandas/_libs/hashtable_class_helper.pxi:7676: KeyError
+    
+    The above exception was the direct cause of the following exception:
+    
+    feats =         dteday  instant  season  ...  cnt_lag_1 cnt_lag_7   cnt_roll_7
+    0   2011-01-10     10.0  WINTER  ...      822.0...    1787.0  1530.142857
+    713 2012-12-31    731.0  WINTER  ...     1796.0     920.0  1531.428571
+    
+    [714 rows x 28 columns]
+    
+        def test_temp_lag_1_is_yesterdays_temp(feats):
+            f = feats.set_index("dteday")
+            r = pd.read_csv(RAW, parse_dates=["dteday"]).set_index("dteday")
+    >       assert f.loc[pd.Timestamp("2012-06-15"), "temp_lag_1"] == pytest.approx(r.loc[pd.Timestamp("2012-06-14"), "temp"])
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    
+    tests/test_leakage.py:64: 
+    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+    .venv/lib/python3.14/site-packages/pandas/core/indexing.py:1199: in __getitem__
+        return self.obj._get_value(*key, takeable=self._takeable)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    .venv/lib/python3.14/site-packages/pandas/core/frame.py:4489: in _get_value
+        series = self._get_item(col)
+                 ^^^^^^^^^^^^^^^^^^^
+    .venv/lib/python3.14/site-packages/pandas/core/frame.py:4969: in _get_item
+        loc = self.columns.get_loc(item)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+    
+    self = Index(['instant', 'season', 'yr', 'mnth', 'holiday', 'weekday', 'temp',
+           'atemp', 'hum', 'windspeed', 'casual', ...kday', 'month_sin', 'month_cos',
+           'weather_severity', 'cnt_lag_1', 'cnt_lag_7', 'cnt_roll_7'],
+          dtype='str')
+    key = 'temp_lag_1'
+    
+        def get_loc(self, key):
+            """
+            Get integer location, slice or boolean mask for requested label.
+        
+            Parameters
+            ----------
+            key : label
+                The key to check its location if it is present in the index.
+        
+            Returns
+            -------
+            int if unique index, slice if monotonic index, else mask
+                Integer location, slice or boolean mask.
+        
+            See Also
+            --------
+            Index.get_slice_bound : Calculate slice bound that corresponds to
+                given label.
+            Index.get_indexer : Computes indexer and mask for new index given
+                the current index.
+            Index.get_non_unique : Returns indexer and masks for new index given
+                the current index.
+            Index.get_indexer_for : Returns an indexer even when non-unique.
+        
+            Examples
+            --------
+            >>> unique_index = pd.Index(list("abc"))
+            >>> unique_index.get_loc("b")
+            1
+        
+            >>> monotonic_index = pd.Index(list("abbc"))
+            >>> monotonic_index.get_loc("b")
+            slice(1, 3, None)
+        
+            >>> non_monotonic_index = pd.Index(list("abcb"))
+            >>> non_monotonic_index.get_loc("b")
+            array([False,  True, False,  True])
+            """
+            casted_key = self._maybe_cast_indexer(key)
+            try:
+                return self._engine.get_loc(casted_key)
+            except KeyError as err:
+                if isinstance(casted_key, slice) or (
+                    isinstance(casted_key, abc.Iterable)
+                    and any(isinstance(x, slice) for x in casted_key)
+                ):
+                    raise InvalidIndexError(key) from err
+    >           raise KeyError(key) from err
+    E           KeyError: 'temp_lag_1'
+    
+    .venv/lib/python3.14/site-packages/pandas/core/indexes/base.py:3648: KeyError
+    =========================== short test summary info ============================
+    FAILED tests/test_leakage.py::test_temp_lag_1_is_yesterdays_temp - KeyError: ...
+    1 failed, 7 passed in 0.76s
