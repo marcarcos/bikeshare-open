@@ -1,7 +1,7 @@
 ---
 name: seed-fault
 description: Seed one deliberate fault in src/ to test whether the hook and tests catch it. Use when asked to seed, plant, or inject a fault. Argument is a one-line description of the fault.
-allowed-tools: Read, Edit, Bash(python -m pytest*), Bash(git diff*), Bash(git status*)
+allowed-tools: Read, Edit, Grep, Bash(grep*), Bash(python -m pytest*), Bash(git diff*), Bash(git status*)
 ---
 
 # Seed a fault
