@@ -33,7 +33,16 @@ TODO (see `docs/AUDIT.md`).
 
 ## Exercise 4: target transform
 
-TODO.
+hgb fails because it was trained on 2011 and cannot predict above 2011's range, while 2012 ridership is ~65% higher. I tested four targets for hgb in `src/ex4_target.py` (`python -m src.ex4_target --target raw|log|diff|ratio|all`), on **validation only**, writing `reports/metrics_ex4.json`. `make train` and `reports/metrics.json` are unchanged, so the Results table above is still the untransformed run.
+
+| hgb target | valid R² | valid MAE |
+|------------|----------|-----------|
+| raw `cnt` (sanity check: matches metrics.json) | 0.1936 | 1321.1 |
+| `log1p(cnt)` | 0.1993 | 1303.2 |
+| `cnt - cnt_roll_7` | 0.7261 | 704.5 |
+| `cnt / cnt_roll_7` | **0.7638** | **657.1** |
+
+`log1p` barely moves anything: it compresses the scale, but the trees still cannot predict outside the range they saw. Predicting relative to `cnt_roll_7` works because the anchor already carries the 2012 level, so the trees only have to learn the day's deviation from the trailing week, which looks similar in both years. The ratio target takes hgb from below persistence (0.4507) to above ridge (0.6951) on validation. I did not touch the test split to choose among these. The honest next step would be one test evaluation of the ratio model, reported next to the rest.
 
 ## Exercise 5
 

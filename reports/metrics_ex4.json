@@ -1,0 +1,31 @@
+{
+  "model": "hgb",
+  "split": "valid",
+  "anchor": "cnt_roll_7",
+  "results": {
+    "raw": {
+      "valid": {
+        "r2": 0.1936,
+        "mae": 1321.1
+      }
+    },
+    "log": {
+      "valid": {
+        "r2": 0.1993,
+        "mae": 1303.2
+      }
+    },
+    "diff": {
+      "valid": {
+        "r2": 0.7261,
+        "mae": 704.5
+      }
+    },
+    "ratio": {
+      "valid": {
+        "r2": 0.7638,
+        "mae": 657.1
+      }
+    }
+  }
+}
