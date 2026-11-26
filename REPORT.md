@@ -29,7 +29,7 @@ See `docs/SEEDED_FAULTS.md`. Summary: the hook caught faults 1 and 2 immediately
 
 ## Exercise 3: audit
 
-TODO (see `docs/AUDIT.md`).
+Solo, so I audited my own leaky commit `6d19ad1` in a separate worktree (disclosed in `docs/AUDIT.md`). The removed `.shift(1)` in `cnt_roll_7` made ridge look **better**: valid R² 0.8025 vs 0.6951 clean, test 0.7254 vs 0.6238. Only `test_rolling_mean_excludes_today` flagged it. A leak presents as an improvement, so the guardrail has to be a test, not a reviewer eyeballing metrics.
 
 ## Exercise 4: target transform
 
